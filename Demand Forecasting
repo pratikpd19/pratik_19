@@ -1,0 +1,47 @@
+import warnings
+import itertools
+import numpy as np
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+warnings.filterwarnings("ignore")
+plt.style.use('fivethirtyeight')
+import pandas as pd
+import statsmodels.api as sm
+import matplotlib
+import requests
+matplotlib.rcParams['axes.labelsize'] = 14
+matplotlib.rcParams['xtick.labelsize'] = 12
+matplotlib.rcParams['ytick.labelsize'] = 12
+matplotlib.rcParams['text.color'] = 'k'
+from statsmodels.tsa.api import ExponentialSmoothing, SimpleExpSmoothing, Holt
+from statsmodels.tsa.holtwinters import SimpleExpSmoothing
+import json
+import matplotlib.dates as mdates  
+from datetime import datetime, timedelta
+import os
+import sys
+import socket
+
+#randomly picking 10 random products
+k=[]
+p=[]
+q=[]
+for i in range(0,len(DistinctCode)):
+    print(DistinctCode[i])
+    if DistinctCode[i]!= 5403351:
+        abc = df3.loc[df3['Code'] == DistinctCode[i]]
+        cols = ['Region','BU','Item Description']
+        abc.drop(cols, axis=1, inplace=True)
+        abc = abc.groupby('Order Date')['Quantity Ordered'].sum().reset_index()
+        abc=abc.set_index('Order Date')  
+        y = abc['Quantity Ordered'].resample('MS').sum()
+        fit1=SimpleExpSmoothing(y).fit()
+        
+        fcast2 = fit1.forecast(2)
+
+        a=fit1.params
+        b= a["smoothing_level"]
+
+        p.append(DistinctCode[i])
+        k.append(b)
+        q.append(fcast2)
